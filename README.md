@@ -37,3 +37,8 @@ Instalace závislostí:
 ```
 pip install -r requirements.txt
 ```
+
+# Spuštění
+```
+python3 main.py
+```
