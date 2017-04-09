@@ -2,6 +2,8 @@ from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
+from kivy.graphics import Color, Rectangle
+
 from pprint import pprint
 
 from index import IndexListGenerator
@@ -12,33 +14,48 @@ class Game:
         self.big_number = big_number
         self.small_number = small_number
 
+class Tlacitko(Button):
+    def __init__(self, callback, **kwargs):
+        super().__init__(**kwargs)
+
+        self.rect_color = None
+        self.bind(on_press=callback)
+        self.set_background(0,0,0,0)
+        self.bind(pos=self.update_rect, size=self.update_rect)
+
+    def set_background(self, r, g, b, a):
+        with self.canvas.before:
+            if not self.rect_color:
+                self.rect_color = Color(r * 255, g * 255, b * 255, a)
+                self.rect = Rectangle(size=self.size, pos=self.pos)
+            else:
+                self.rect_color.r = r * 255
+                self.rect_color.g = g * 255
+                self.rect_color.b = b * 255
+                self.rect_color.a = a
+
+    def update_rect(self, instance, value):
+        instance.rect.pos = instance.pos
+        instance.rect.size = instance.size
+
+
 class Ctverec(GridLayout):
     '''Vygeneruje ctverec 3x3 s inputy'''
     def __init__(self, callback, **kwargs):
         super().__init__(**kwargs)
-
         self.ctverec_plocha = []
+        self.spacing = [5]
+
         self.cols = 3
         for a in range(9):
-            text = ""
-            tlacitko = Button(text=text)
+            tlacitko = Tlacitko(callback=callback)
             self.add_widget(tlacitko)
-            tlacitko.bind(on_press=callback)
             self.ctverec_plocha.append(tlacitko)
-
-            '''
-            text_input = TextInput(multiline=False)
-            self.add_widget(text_input)
-            text_input.bind(text=on_change) #BIND - kdyz se zmeni text, zavola on_change
-
-            self.ctverec_plocha.append(text_input)
-            '''
-
 
 class SudokuScreen(GridLayout):
     def __init__(self, callback, **kwargs):
         super().__init__(**kwargs)
-        self.spacing = [5]
+        self.spacing = [8]
 
         self.hraci_pole = []
         #vytvoreni hraci plochy;
@@ -91,9 +108,10 @@ class Screen(GridLayout):
         self.add_widget(KeybordScreen(callback=self.callback_keyboard, size_hint_x=1))
 
     def callback(self, instance):
-        if self.aktivni_bunka:
-            self.aktivni_bunka.background_color = (1,1,1,1)
-        instance.background_color = (0.5,0.5,1,1)
+        #zruseni ramecku kolem tlacitka
+        if self.aktivni_bunka and self.aktivni_bunka.background_color != (1,0,0,1):
+            self.aktivni_bunka.set_background(0,0,0,0)
+        instance.set_background(0,0,1,1)
         self.aktivni_bunka = instance
 
     def callback_keyboard(self, instance):
@@ -103,9 +121,9 @@ class Screen(GridLayout):
 
     def vyhodnoceni(self):
         self.aktivni_bunka.text = self.klavesa_big
-        #self.aktivni_bunka.background_color = (1,1,1,1)
 
-        self.vytiskni()
+
+        #self.vytiskni()
 
         #prebarveni vsech policek na bilo:
         for ctverec in self.sudoku_screen.hraci_pole:
