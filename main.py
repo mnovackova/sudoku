@@ -112,32 +112,29 @@ class Screen(GridLayout):
             for ctverecek in ctverec:
                 ctverecek.background_color = (1,1,1,1)
 
-        #vybarveni spatnych policek:
-        for jeden_radek in self.list_index: # pro kontrolu radku, sloupcu a ctvercu
+        # prochazeni jednotlivych radku seznamu pro kontrolu shody cisel v radku, sloupci ci ctverci
+        for seznam_indexu in self.list_index:
             seznam_cisel = []
-            #vytvoreni kontrolniho seznamu
-            for prvek in jeden_radek:
-                ctverecek = self.sudoku_screen.hraci_pole[prvek[0]][prvek[1]]
+            for index in seznam_indexu:
+                ctverecek = self.sudoku_screen.hraci_pole[index[0]][index[1]]
                 try:
-                    seznam_cisel.append(int(ctverecek.text))
+                    ctverecek_number = int(ctverecek.text)
                 except ValueError:
-                    pass
+                    seznam_cisel.append("")
+                else:
+                    seznam_cisel.append(ctverecek_number)
             print(seznam_cisel)
-            #srovnavani s kontrolnim seznamem a pribarvovani policek
-            for index, prvek in enumerate(jeden_radek):
-                print(index, prvek)
-                ctverecek = self.sudoku_screen.hraci_pole[prvek[0]][prvek[1]]
+
+            #srovnavani s kontrolnim seznamem(seznam_cisel) a pribarvovani policek
+            for poradi, index in enumerate(seznam_indexu):
+                ctverecek = self.sudoku_screen.hraci_pole[index[0]][index[1]]
                 try:
-                    int(ctverecek.text)
+                    ctverecek_number = int(ctverecek.text)
                 except ValueError:
                     pass
                 else:
-                    print(int(ctverecek.text), 'in', seznam_cisel[:index] + seznam_cisel[index+1:])
-
-                    if int(ctverecek.text) in (seznam_cisel[:index] + seznam_cisel[index+1:]):
-                        if ctverecek:
-                            ctverecek.background_color = (1,0,0,1)
-
+                    if ctverecek_number in (seznam_cisel[:poradi] + seznam_cisel[poradi+1:]):
+                        ctverecek.background_color = (1,0,0,1)
 
     def vytiskni(self):
         for ctverec in self.sudoku_screen.hraci_pole:
