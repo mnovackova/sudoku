@@ -17,7 +17,8 @@ class Game:
 class Tlacitko(Button):
     def __init__(self, callback, **kwargs):
         super().__init__(**kwargs)
-
+        self.font_size = 25
+        
         self.rect_color = None
         self.bind(on_press=callback)
         self.set_background(0,0,0,0)
@@ -80,7 +81,7 @@ class KeybordBig(GridLayout):
         self.cols = 3
         for a in range(9):
             text = str(a+1)
-            tlacitko = Button(text=text)
+            tlacitko = Button(text=text, font_size=25)
             self.add_widget(tlacitko)
             tlacitko.bind(on_press=callback)
 
