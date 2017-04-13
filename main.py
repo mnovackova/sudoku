@@ -3,6 +3,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
+from kivy.uix.popup import Popup
 
 from pprint import pprint
 
@@ -137,6 +138,8 @@ class Screen(GridLayout):
             for ctverecek in ctverec:
                 ctverecek.background_color = (1,1,1,1)
 
+        is_red_square = False
+        is_full = True
         # prochazeni jednotlivych radku seznamu pro kontrolu shody cisel v radku, sloupci ci ctverci
         for seznam_indexu in self.list_index:
             seznam_cisel = []
@@ -156,10 +159,20 @@ class Screen(GridLayout):
                 try:
                     ctverecek_number = int(ctverecek.text)
                 except ValueError:
-                    pass
+                    is_full = False
                 else:
                     if ctverecek_number in (seznam_cisel[:poradi] + seznam_cisel[poradi+1:]):
                         ctverecek.background_color = (1,0,0,1)
+                        is_red_square = True
+
+        if not is_red_square and is_full:
+            print("Vyhrál jsi")
+            tlacitko = Button(text='Vyhrál jsi!')
+            popup = Popup(title='',
+                content=tlacitko)
+            tlacitko.bind(on_press=popup.dismiss)
+            popup.open()
+
 
     def vytiskni(self):
         for ctverec in self.sudoku_screen.hraci_pole:
