@@ -15,8 +15,9 @@ sudo dnf install \
     gcc \
     gcc-c++ \
     SDL2_ttf-devel \
+    SDL2_image-devel \
     SDL2_mixer-devel \
-    khrplatform-devel \
+    mesa-libGL-devel \
     mesa-libGLES \
     mesa-libGLES-devel \
     gstreamer-plugins-good \
