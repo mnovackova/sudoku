@@ -7,6 +7,7 @@ from kivy.graphics import Color, Rectangle
 from pprint import pprint
 
 from index import IndexListGenerator
+import level
 
 class Game:
     def __init__(self):
@@ -15,14 +16,19 @@ class Game:
         self.small_number = small_number
 
 class Tlacitko(Button):
-    def __init__(self, callback, **kwargs):
+    def __init__(self, callback, item, **kwargs):
         super().__init__(**kwargs)
-        self.font_size = 25
-        
+        self.font_size = 23
+
         self.rect_color = None
-        self.bind(on_press=callback)
+        if item == "":
+            self.bind(on_press=callback)
+        else:
+            self.text = str(item)
+            self.bold = True
+            self.font_size = 25
         self.set_background(0,0,0,0)
-        self.bind(pos=self.update_rect, size=self.update_rect)
+        self.bind(pos=self.update_rect, size=self.update_rect) #oznacovani modrym ctvercem
 
     def set_background(self, r, g, b, a):
         with self.canvas.before:
@@ -42,14 +48,14 @@ class Tlacitko(Button):
 
 class Ctverec(GridLayout):
     '''Vygeneruje ctverec 3x3 s inputy'''
-    def __init__(self, callback, **kwargs):
+    def __init__(self, callback, row, **kwargs):
         super().__init__(**kwargs)
         self.ctverec_plocha = []
         self.spacing = [5]
 
         self.cols = 3
-        for a in range(9):
-            tlacitko = Tlacitko(callback=callback)
+        for item in row:
+            tlacitko = Tlacitko(callback=callback, item=item)
             self.add_widget(tlacitko)
             self.ctverec_plocha.append(tlacitko)
 
@@ -61,8 +67,8 @@ class SudokuScreen(GridLayout):
         self.hraci_pole = []
         #vytvoreni hraci plochy;
         self.cols = 3
-        for a in range(9):
-            ctverec = Ctverec(callback=callback)
+        for row in level.one:
+            ctverec = Ctverec(callback=callback, row=row)
             self.add_widget(ctverec)
             self.hraci_pole.append(ctverec.ctverec_plocha)
 
