@@ -4,6 +4,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
 from kivy.uix.popup import Popup
+from random import choice
 
 from pprint import pprint
 
@@ -68,7 +69,8 @@ class SudokuScreen(GridLayout):
         self.hraci_pole = []
         #vytvoreni hraci plochy;
         self.cols = 3
-        for row in level.one:
+        level_choice = choice(level.level)
+        for row in level_choice:
             ctverec = Ctverec(callback=callback, row=row)
             self.add_widget(ctverec)
             self.hraci_pole.append(ctverec.ctverec_plocha)
