@@ -11,11 +11,6 @@ from pprint import pprint
 from index import IndexListGenerator
 import level
 
-class Game:
-    def __init__(self):
-        self.actual_square = actual_square
-        self.big_number = big_number
-        self.small_number = small_number
 
 class Tlacitko(Button):
     def __init__(self, callback, item, **kwargs):
