@@ -76,12 +76,12 @@ class SudokuScreen(GridLayout):
             self.hraci_pole.append(ctverec.ctverec_plocha)
 
 class KeybordScreen(GridLayout):
-    def __init__(self, callback, **kwargs):
+    def __init__(self, callback, callback_delete, **kwargs):
         super().__init__(**kwargs)
         self.spacing = [20]
         self.cols = 1
         self.add_widget(KeybordBig(callback=callback))
-        self.add_widget(KeybordSmall())
+        self.add_widget(KeybordSmall(callback_delete=callback_delete))
 
 class KeybordBig(GridLayout):
     def __init__(self, callback, **kwargs):
@@ -95,14 +95,15 @@ class KeybordBig(GridLayout):
             tlacitko.bind(on_press=callback)
 
 class KeybordSmall(GridLayout):
-    def __init__(self, **kwargs):
+    def __init__(self, callback_delete, **kwargs):
         super().__init__(**kwargs)
         self.spacing = [5]
-        self.cols = 3
-        for a in range(9):
-            text = str(a+1)
-            tlacitko = Button(text=text)
-            self.add_widget(tlacitko)
+        self.rows = 30
+
+        text = 'SMAZAT'
+        tlacitko = Button(text=text)
+        self.add_widget(tlacitko)
+        tlacitko.bind(on_press=callback_delete)
 
 class Screen(GridLayout):
     def __init__(self, **kwargs):
@@ -115,7 +116,7 @@ class Screen(GridLayout):
 
         self.cols = 2
         self.add_widget(self.sudoku_screen)
-        self.add_widget(KeybordScreen(callback=self.callback_keyboard, size_hint_x=1))
+        self.add_widget(KeybordScreen(callback=self.callback_keyboard, callback_delete=self.callback_delete, size_hint_x=1))
 
     def callback(self, instance):
         #zruseni ramecku kolem tlacitka
@@ -128,9 +129,13 @@ class Screen(GridLayout):
         self.klavesa_big = instance.text
         self.vyhodnoceni()
 
+    def callback_delete(self, instance):
+        self.klavesa_big = ''
+        self.vyhodnoceni()
 
     def vyhodnoceni(self):
-        self.aktivni_bunka.text = self.klavesa_big
+        if self.aktivni_bunka:
+            self.aktivni_bunka.text = self.klavesa_big
 
 
         #self.vytiskni()
